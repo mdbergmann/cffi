@@ -1,8 +1,8 @@
 ;;;; -*- Mode: lisp; indent-tabs-mode: nil -*-
 ;;;
-;;; cffi-clamiga.lisp --- CL-Amiga (clamiga) backend for CFFI.
+;;; cffi-amilisp.lisp --- AmiLisp (amilisp) backend for CFFI.
 ;;;
-;;; Builds the CFFI-SYS interface on top of clamiga's FFI package:
+;;; Builds the CFFI-SYS interface on top of amilisp's FFI package:
 ;;;   - foreign pointers / typed peek-poke      (ffi:peek-* / ffi:poke-*)
 ;;;   - dlopen / dlsym                          (ffi:load-library / ffi:symbol-pointer)
 ;;;   - a libffi-based generic call engine      (ffi:call-foreign)
@@ -28,7 +28,7 @@
 
 ;;;# Mis-features
 ;;;
-;;; clamiga has a single flat symbol namespace (dlsym RTLD_DEFAULT) — there
+;;; amilisp has a single flat symbol namespace (dlsym RTLD_DEFAULT) — there
 ;;; is no per-library symbol resolution at the cffi-sys level.
 (pushnew 'flat-namespace *features*)
 
@@ -40,8 +40,8 @@
 
 ;;;# Pointers
 ;;;
-;;; A CFFI "foreign pointer" is a clamiga FFI foreign-pointer object.  Its
-;;; POINTER-ADDRESS is the real machine address (resolved through clamiga's
+;;; A CFFI "foreign pointer" is an amilisp FFI foreign-pointer object.  Its
+;;; POINTER-ADDRESS is the real machine address (resolved through amilisp's
 ;;; side table on the 64-bit host), so MAKE-POINTER / INC-POINTER round-trip
 ;;; through real addresses.
 
@@ -100,7 +100,7 @@ bound to SIZE."
 
 ;;;# Shareable Vectors
 ;;;
-;;; clamiga's GC moves Lisp objects, so we can't hand out a pointer into a
+;;; amilisp's GC moves Lisp objects, so we can't hand out a pointer into a
 ;;; Lisp vector's data.  WITH-POINTER-TO-VECTOR-DATA copies the bytes into
 ;;; foreign memory and copies any changes back out (a copy-in/copy-out).
 
@@ -165,7 +165,7 @@ changes are copied back into VECTOR after BODY."
 
   (defun %type-entry (type-keyword)
     (or (assoc type-keyword *type-table*)
-        (error "~S is not a supported CFFI type on clamiga" type-keyword)))
+        (error "~S is not a supported CFFI type on amilisp" type-keyword)))
 
   (defun %cffi-type->primitive (type-keyword)
     (fourth (%type-entry type-keyword))))
